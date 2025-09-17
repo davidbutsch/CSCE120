@@ -138,9 +138,38 @@ std::vector<driver> load_driver_data() {
 // driver.
 //   the fastest/minimum time is ranked 1
 // the order of the elements in the vector should not be changed
-std::vector<driver> set_rankings(std::vector<driver>) {
-  // TODO(student)
-  return {};
+std::vector<driver> set_rankings(std::vector<driver> drivers) {
+  // vector of driver times
+  std::vector<double> driver_times;
+
+  // populate vector
+  for (const driver &driver : drivers)
+    driver_times.push_back(driver.time);
+
+  // bubble sort
+  for (size_t i = 0; i < driver_times.size(); i++) {
+    for (size_t j = 0; j < driver_times.size() - i - 1; j++) {
+      // if driver times are out of order (longer -> shorter) swap
+      if (driver_times.at(j) > driver_times.at(j + 1)) {
+        double temp_time = driver_times.at(j);
+
+        driver_times.at(j) = driver_times.at(j + 1);
+        driver_times.at(j + 1) = temp_time;
+      }
+    }
+  }
+
+  // update ranks based on sorted times
+  for (driver &driver : drivers) {
+    for (size_t i = 0; i < driver_times.size(); i++) {
+      double time = driver_times.at(i);
+
+      if (driver.time == time)
+        driver.rank = i + 1;
+    }
+  }
+
+  return drivers;
 }
 
 std::string trim(std::string) {
