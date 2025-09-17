@@ -179,10 +179,21 @@ std::vector<driver> set_rankings(std::vector<driver> drivers) {
   return drivers;
 }
 
-std::string trim(std::string) {
-  // TODO(student)
-  return "";
-}
+std::string trim(std::string s) {
+  // any sort of whitespace (tab, newline, spaces, etc)
+  const char *whitespace = " \t\n\r\f\v";
+  size_t begin = s.find_first_not_of(whitespace);
+  // if no string content is found (content != whitespace) return empty string
+  if (begin == std::string::npos) {
+    return std::string{}; // empty string (not equivalent to "")
+  }
+
+  // find last index of content before whitespace
+  // used to compute length for substr
+  size_t end = s.find_last_not_of(whitespace);
+  // substr!
+  return s.substr(begin, end - begin + 1);
+};
 
 // print the results of the race
 void print_results(const std::vector<driver> &drivers) {
@@ -202,10 +213,7 @@ void print_results(const std::vector<driver> &drivers) {
     for (const driver &driver : drivers) {
       if (driver.rank == rank) {
         std::string rank_str = "[" + std::to_string(rank) + "]";
-        std::cout << std::setw(4)
-                  // returns a copy of the input string with whitespace
-                  // removed from the front and back<< std::left << rank_str
-                  // << " " << driver.time
+        std::cout << std::setw(4) << std::left << rank_str << " " << driver.time
                   << " " << std::setw(15) << std::left << driver.lastname
                   << " (" << driver.country << ") +"
                   << (driver.time - best_time) << std::endl;
