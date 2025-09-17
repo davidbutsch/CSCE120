@@ -100,42 +100,49 @@ inline void validate_driver(const driver &driver) {
 // returns a vector of drivers, or an empty vector if any input is invalid
 std::vector<driver> load_driver_data() {
 
-  std::string current_line;
-  std::vector<std::string> lines;
+  try {
 
-  while (std::getline(std::cin, current_line))
-    // if next line is empty break out of loop
-    if (current_line.empty())
-      break;
-    // else push non-empty lines into lines vector
-    else
-      lines.push_back(current_line);
+    std::string current_line;
+    std::vector<std::string> lines;
 
-  std::vector<driver> drivers;
+    while (std::getline(std::cin, current_line))
+      // if next line is empty break out of loop
+      if (current_line.empty())
+        break;
+      // else push non-empty lines into lines vector
+      else
+        lines.push_back(current_line);
 
-  // parse lines, validate driver info, and push structs to drivers vector
-  for (std::string line : lines) {
-    std::vector<std::string> driver_props = space_split(line);
+    std::vector<driver> drivers;
 
-    driver cur_driver = {
-        driver_props.at(3),        // lastname
-        driver_props.at(1),        // country
-        stoui(driver_props.at(2)), // number
-        stod(driver_props.at(0)),  // time
-        0                          // rank
-    };
+    // parse lines, validate driver info, and push structs to drivers vector
+    for (std::string line : lines) {
+      std::vector<std::string> driver_props = space_split(line);
 
-    // validate driver (throws invalid_argument)
-    validate_driver(cur_driver);
+      driver cur_driver = {
+          driver_props.at(3),        // lastname
+          driver_props.at(1),        // country
+          stoui(driver_props.at(2)), // number
+          stod(driver_props.at(0)),  // time
+          0                          // rank
+      };
 
-    drivers.push_back(cur_driver);
+      // validate driver (throws invalid_argument)
+      validate_driver(cur_driver);
+
+      drivers.push_back(cur_driver);
+    }
+
+    return drivers;
+
+  } catch (std::exception &e) {
+    std::cout << "Bad input" << std::endl;
+    return {};
   }
-
-  return drivers;
 }
 
-// returns a copy of the input vector with ranks set based on the time for each
-// driver.
+// returns a copy of the input vector with ranks set based on the time for
+// each driver.
 //   the fastest/minimum time is ranked 1
 // the order of the elements in the vector should not be changed
 std::vector<driver> set_rankings(std::vector<driver> drivers) {
@@ -195,13 +202,13 @@ void print_results(const std::vector<driver> &drivers) {
     for (const driver &driver : drivers) {
       if (driver.rank == rank) {
         std::string rank_str = "[" + std::to_string(rank) + "]";
-        std::cout
-            << std::setw(4)
-            // returns a copy of the input string with whitespace removed from
-            // the front and back<< std::left << rank_str << " " << driver.time
-            << " " << std::setw(15) << std::left << driver.lastname << " ("
-            << driver.country << ") +" << (driver.time - best_time)
-            << std::endl;
+        std::cout << std::setw(4)
+                  // returns a copy of the input string with whitespace
+                  // removed from the front and back<< std::left << rank_str
+                  // << " " << driver.time
+                  << " " << std::setw(15) << std::left << driver.lastname
+                  << " (" << driver.country << ") +"
+                  << (driver.time - best_time) << std::endl;
       }
     }
   }
