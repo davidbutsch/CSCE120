@@ -119,6 +119,11 @@ std::vector<driver> load_driver_data() {
     for (std::string line : lines) {
       std::vector<std::string> driver_props = space_split(line);
 
+      // account for spaces in name
+      if (driver_props.size() > 4) {
+        driver_props.at(3) += (" " + driver_props.at(4));
+      }
+
       driver cur_driver = {
           driver_props.at(3),        // lastname
           driver_props.at(1),        // country
